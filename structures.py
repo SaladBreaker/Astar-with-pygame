@@ -13,12 +13,13 @@ class Node:
 
         :param parent: is an object of type Node
         """
+
         self.position = position
         self.parent = parent
 
         self.f = 0
-        self.g = 0  # actual dist
-        self.h = 0  # eq
+        self.g = 0
+        self.h = 0
 
     def compute_f(self, end_node):
         self.g = self.parent.g + 1

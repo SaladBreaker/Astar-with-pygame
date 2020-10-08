@@ -16,6 +16,17 @@ def sorted_insert(opened_list, node):
     return opened_list + [node]
 
 
+def get_correct_path(node):
+    path = []
+    current_node = node
+
+    while current_node:
+        path.append(current_node.position)
+        current_node = current_node.parent
+
+    return path[::-1]
+
+
 def get_path_astart(maze, start, end):
     """
     returns  a list with the best path from the start to the end
@@ -40,13 +51,10 @@ def get_path_astart(maze, start, end):
     while opened_list:
         current_node = opened_list.pop(0)
         closed_list.append(current_node)
-        print(f"On node: {current_node.position}")
-        # print(f"On : {opened_list}")
-        # print(f"Off: {closed_list}")
 
         if current_node == end_node:
             print("Found it!")
-            return
+            return get_correct_path(current_node)
 
         neighbours = current_node.get_neighbours()
         for neighbour in neighbours:
@@ -61,7 +69,7 @@ def get_path_astart(maze, start, end):
                 continue
 
             # check is the neighbour is an obstacle
-            if maze[neighbour.position[0]][neighbour.position[1]] == 1:
+            if maze[neighbour.position[1]][neighbour.position[0]] == 1:
                 continue
 
             if neighbour in closed_list:
@@ -80,10 +88,17 @@ def get_path_astart(maze, start, end):
 
             opened_list = sorted_insert(opened_list, neighbour)
 
+    print("Could not find a solution!")
 
-if __name__ == "__main__":
-    maze = [[0, 0, 0, 0], [0, 1, 0, 1], [0, 0, 0, 1], [0, 0, 1, 0]]
 
-    start = (0, 0)
-    end = (3, 3)
-    get_path_astart(maze, start, end)
+def read_maze():
+    maze = []
+    with open("./maze.txt", "r") as f:
+        maze = f.readlines()
+
+        for line_index in range(len(maze)):
+            maze[line_index] = [
+                int(el.strip()) for el in maze[line_index][1:-2].split(",")
+            ]
+
+    return maze
